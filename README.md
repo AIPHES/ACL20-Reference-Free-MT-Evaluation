@@ -26,7 +26,7 @@ We provide [`main.py`](main.py) which could reproduce the results, i.e., the sys
 
 ## License
 
-XMoverScore is BSD-licensed, as found in the [`LICENSE`](LICENSE) file in the root directory of this source tree.
+XMoverScore is Apache-licensed, as found in the [`LICENSE`](LICENSE) file in the root directory of this source tree.
 
 ## References
 
