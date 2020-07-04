@@ -52,7 +52,7 @@ for pair in tqdm(reference_list.items()):
     temp = np.loadtxt('mapping/europarl-v7.' + src + '-' + tgt + '.2k.12.GBDD.map')
     bias = torch.tensor(temp, dtype=torch.float).to(device)
     
-    data = pd.read_csv(os.path.join('testset', path), sep='\t') 
+    data = pd.read_csv(os.path.join('WMT17', 'testset', path), sep='\t') 
     references = data['reference'].tolist()
     translations = data['translation'].tolist()
     source = data['source'].tolist()
