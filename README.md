@@ -1,9 +1,9 @@
 # ACL20-Reference-Free-MT-Evaluation
-XMoverScore, is a metric for reference-free MT evaluation, described in the paper [On the Limitations of Cross-lingual Encoders as Exposed by Reference-Free Machine Translation Evaluation] (https://www.aclweb.org/anthology/2020.acl-main.151.pdf) (ACL 2020)
+XMoverScore is a metric, a cross-lingual variant of [MoverScore] (https://github.com/AIPHES/emnlp19-moverscore), for reference-free MT evaluation, described in the paper [On the Limitations of Cross-lingual Encoders as Exposed by Reference-Free Machine Translation Evaluation] (https://www.aclweb.org/anthology/2020.acl-main.151.pdf) (ACL 2020)
 
 **CURRENT VERSION:**
 * We provide a reference-free metric coupled with re-aligned multilingual BERT and a target-side LM (GPT-2).
-* We provide the metrics evaluation on the WMT17, WMT18 and WMT19 benchmark datasets.
+* We provide the metrics evaluation on the WMT17, WMT18 and WMT19 datasets.
 * The remapping weights are released, with 11 supported languages involving German, Chinese, Czech, Latvian, Finnish, Russian, Turkish, Gujarati, Kazakh, Lithuanian and Estonian. 
 * We provide manual annotations of cross-lingual (German-English and Russian-English) DA scores for source-translation pairs.
 * Since our metric uses BERT and GPT-2, a GPU is necessary.
