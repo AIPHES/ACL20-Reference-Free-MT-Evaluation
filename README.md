@@ -5,7 +5,7 @@ XMoverScore is a metric, a cross-lingual variant of [MoverScore] (https://github
 * We provide a reference-free metric coupled with re-aligned multilingual BERT and a target-side LM (GPT-2).
 * We provide the metrics evaluation on the WMT17, WMT18 and WMT19 datasets.
 * The remapping weights are released, with 11 supported languages involving German, Chinese, Czech, Latvian, Finnish, Russian, Turkish, Gujarati, Kazakh, Lithuanian and Estonian. 
-* We provide manual annotations of cross-lingual (German-English and Russian-English) DA scores for source-translation pairs.
+* We provide [manual annotations] (https://docs.google.com/spreadsheets/d/1kLGk66TgUzSRftm_7Xir5ehhnU1AqD5XR8pM44mDSTI/edit?usp=sharing) of cross-lingual (German-English and Russian-English) DA scores for source-translation pairs.
 * Since our metric uses BERT and GPT-2, a GPU is necessary.
 
 ## Dependencies
