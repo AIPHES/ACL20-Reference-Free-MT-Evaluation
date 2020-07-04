@@ -168,30 +168,3 @@ def word_mover_score(mapping, projection, bias, model, tokenizer, src, hyps, n_g
             preds.append(1 - score) 
             
     return preds
-
-
-def batched_cdist_l2(x1, x2):
-    x1_norm = x1.pow(2).sum(dim=-1, keepdim=True)
-    x2_norm = x2.pow(2).sum(dim=-1, keepdim=True)
-    res = torch.baddbmm(
-        x2_norm.transpose(-2, -1),
-        x1,
-        x2.transpose(-2, -1),
-        alpha=-2
-    ).add_(x1_norm).clamp_min_(1e-30).sqrt_()
-    return res
-
-def parallel_wmd(arguments):
-    n_tokens, ref_idf, hyp_idf, dst = arguments
-        
-    c1 = np.zeros(n_tokens, dtype=np.float)
-    c2 = np.zeros_like(c1)
-    
-    c1[:len(ref_idf)] = ref_idf
-    c2[len(ref_idf):] = hyp_idf
-    
-    score = emd(_safe_divide(c1, np.sum(c1)), 
-                _safe_divide(c2, np.sum(c2)), 
-                np.asarray(dst, dtype='float64'))
-    
-    return 1 - score 
