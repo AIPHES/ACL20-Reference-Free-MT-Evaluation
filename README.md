@@ -34,14 +34,14 @@ XMoverScore is Apache-licensed, as found in the [`LICENSE`](LICENSE) file in the
 
 [1] Wei Zhao, Goran Glavaš, Maxime Peyrard, Yang Gao, Robert West, Steffen Eger,
     [*On the Limitations of Cross-lingual Encoders as Exposed by Reference-Free Machine Translation Evaluation*](https://www.aclweb.org/anthology/2020.acl-main.151.pdf),
-    ACL 2020
+    ACL 2020, [bib](https://www.aclweb.org/anthology/2020.acl-main.151.bib)
 
 
 [2] Yang Gao, Wei Zhao, Steffen Eger
     [*SUPERT: Towards New Frontiers in Unsupervised Evaluation Metrics for Multi-Document Summarization*](http://aclweb.org/anthology/P18-2037)
-    ACL 2020
+    ACL 2020, [bib](https://www.aclweb.org/anthology/2020.acl-main.124.bib)
 
 [3] Wei Zhao, Maxime Peyrard, Fei Liu, Yang Gao, Christian M. Meyer, Steffen Eger,
     [*MoverScore: Text Generation Evaluating with Contextualized Embeddings and Earth Mover Distance*](http://www.lrec-conf.org/proceedings/lrec2018/pdf/658.pdf),
-    EMNLP 2019
+    EMNLP 2019, [bib](https://www.aclweb.org/anthology/D19-1053.bib)
 
