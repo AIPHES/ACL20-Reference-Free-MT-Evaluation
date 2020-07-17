@@ -32,16 +32,47 @@ XMoverScore is Apache-licensed, as found in the [`LICENSE`](LICENSE) file in the
 
 ## References
 
-[1] Wei Zhao, Goran Glavaš, Maxime Peyrard, Yang Gao, Robert West, Steffen Eger,
-    [*On the Limitations of Cross-lingual Encoders as Exposed by Reference-Free Machine Translation Evaluation*](https://www.aclweb.org/anthology/2020.acl-main.151.pdf),
-    ACL 2020, [BibTex](https://www.aclweb.org/anthology/2020.acl-main.151.bib)
 
+```
+@inproceedings{zhao-etal-2020-limitations,
+    title = "On the Limitations of Cross-lingual Encoders as Exposed by Reference-Free Machine Translation Evaluation",
+    author = "Zhao, Wei and Glava{\v{s}}, Goran and Peyrard, Maxime and Gao, Yang and West, Robert and Eger, Steffen",
+    booktitle = "Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2020",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://www.aclweb.org/anthology/2020.acl-main.151",
+    pages = "1656--1671"
+}
+```
 
-[2] Yang Gao, Wei Zhao, Steffen Eger
-    [*SUPERT: Towards New Frontiers in Unsupervised Evaluation Metrics for Multi-Document Summarization*](http://aclweb.org/anthology/P18-2037)
-    ACL 2020, [BibTex](https://www.aclweb.org/anthology/2020.acl-main.124.bib)
+```
+@inproceedings{gao-etal-2020-supert,
+    title = "{SUPERT}: Towards New Frontiers in Unsupervised Evaluation Metrics for Multi-Document Summarization",
+    author = "Gao, Yang  and Zhao, Wei and Eger, Steffen",
+    booktitle = "Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2020",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://www.aclweb.org/anthology/2020.acl-main.124",
+    pages = "1347--1354"   
+}
+```
 
-[3] Wei Zhao, Maxime Peyrard, Fei Liu, Yang Gao, Christian M. Meyer, Steffen Eger,
-    [*MoverScore: Text Generation Evaluating with Contextualized Embeddings and Earth Mover Distance*](http://www.lrec-conf.org/proceedings/lrec2018/pdf/658.pdf),
-    EMNLP 2019, [BibTex](https://www.aclweb.org/anthology/D19-1053.bib)
+```
+@inproceedings{zhao-etal-2019-moverscore,
+    title = "{M}over{S}core: Text Generation Evaluating with Contextualized Embeddings and Earth Mover Distance",
+    author = "Zhao, Wei and Peyrard, Maxime and Liu, Fei and Gao, Yang and Meyer, Christian M. and Eger, Steffen",
+    booktitle = "Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)",
+    month = nov,
+    year = "2019",
+    address = "Hong Kong, China",
+    publisher = "Association for Computational Linguistics",
+    url = "https://www.aclweb.org/anthology/D19-1053",
+    doi = "10.18653/v1/D19-1053",
+    pages = "563--578",
+}
+```
 
