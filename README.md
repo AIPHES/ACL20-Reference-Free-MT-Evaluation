@@ -1,7 +1,10 @@
 # ACL20-Reference-Free-MT-Evaluation
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-red.svg)](#python) 
 
-XMoverScore is a metric, a cross-lingual variant of [MoverScore](https://github.com/AIPHES/emnlp19-moverscore), for reference-free MT evaluation, described in the paper [On the Limitations of Cross-lingual Encoders as Exposed by Reference-Free Machine Translation Evaluation](https://www.aclweb.org/anthology/2020.acl-main.151.pdf) (ACL 2020)
+XMoverScore is a metric for reference-free MT evaluation, described in the paper [On the Limitations of Cross-lingual Encoders as Exposed by Reference-Free Machine Translation Evaluation](https://www.aclweb.org/anthology/2020.acl-main.151.pdf) (ACL 2020).
+
+XMoverScore is a cross-lingual extension of [MoverScore](https://github.com/AIPHES/emnlp19-moverscore) for Machine Translation Evaluation. We have also released a similar metric for summarization, called [SUPERT](https://github.com/yg211/acl20-ref-free-eval).
+
 
 **CURRENT VERSION:**
 * We provide a reference-free metric coupled with re-aligned multilingual BERT and a target-side LM (GPT-2).
