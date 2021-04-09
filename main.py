@@ -77,7 +77,7 @@ for pair in dataset.items():
 
 print_sys_level_correlation('xmoverscore', wmt_xmoverscores, list(dataset.values()), os.path.join(args.dataset, 'DA-syslevel.csv'))
 
-if args.dataset not in ['WMT17']: # metrics are not evaluated by RR-seglevel on WMT17
+if args.dataset not in ['WMT17']:
     print_seg_level_correlation('xmoverscore', wmt_xmoverscores, list(dataset.values()), os.path.join(args.dataset, 'RR-seglevel.csv'))
 
 
