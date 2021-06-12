@@ -1,6 +1,6 @@
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from transformers import BertModel, BertTokenizer, BertConfig
-from score_utils import word_mover_score, lm_perplexity
+from score_utils_2 import word_mover_score, lm_perplexity
 class XMOVERScorer:
 
     def __init__(
@@ -20,9 +20,9 @@ class XMOVERScorer:
         self.lm_tokenizer = GPT2Tokenizer.from_pretrained(lm_name)        
         self.lm.to(device)
 
-    def compute_xmoverscore(self, mapping, projection, bias, source, translations, ngram, bs):
-        return word_mover_score(mapping, projection, bias, self.model, self.tokenizer, source, translations, n_gram=ngram, batch_size=bs)
-
+    def compute_xmoverscore(self, mapping, projection, bias, source, translations, ngram=2, bs=32, layer=8, dropout_rate=0.3):
+        return word_mover_score(mapping, projection, bias, self.model, self.tokenizer, source, translations, \
+                                n_gram=ngram, layer=layer, dropout_rate=dropout_rate, batch_size=bs)
+                     
     def compute_perplexity(self, translations, bs):        
         return lm_perplexity(self.lm, translations, self.lm_tokenizer, batch_size=bs)            
-    

@@ -21,7 +21,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--model_name', type=str, default='bert-base-multilingual-cased')
 parser.add_argument('--do_lower_case', type=bool, default=False)
 parser.add_argument('--language_model', type=str, default='gpt2')
-parser.add_argument('--mapping', type=str, default='CLP', help='CLP or UMD')    
+parser.add_argument('--alignment', type=str, default='CLP', help='CLP or UMD or None')    
+parser.add_argument('--ngram', type=int, default=2)
+parser.add_argument('--layer', type=int, default=8)
+parser.add_argument('--batch_size', type=int, default=32)
+parser.add_argument('--dropout_rate', type=float, default=0.3, help='Remove the percentage of noisy elements in Word-Mover-Distance')
 
 import json
 args = parser.parse_args()
@@ -44,14 +48,14 @@ for pair in tqdm(reference_list.items()):
     lp, path = pair
     src, tgt = lp.split('-')
     
-    device='cuda:0'
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     
-    temp = np.loadtxt('mapping/europarl-v7.' + src + '-' + tgt + '.2k.12.BAM.map')
+    temp = np.load('mapping/layer-8/europarl-v7.%s-%s.%s.BAM' % (src, tgt, args.layer), allow_pickle=True)
     projection = torch.tensor(temp, dtype=torch.float).to(device)
     
-    temp = np.loadtxt('mapping/europarl-v7.' + src + '-' + tgt + '.2k.12.GBDD.map')
+    temp = np.load('mapping/layer-8/europarl-v7.%s-%s.%s.GBDD' % (src, tgt, args.layer), allow_pickle=True)
     bias = torch.tensor(temp, dtype=torch.float).to(device)
-    
+
     data = pd.read_csv(os.path.join('WMT17', 'testset', path), sep='\t') 
     references = data['reference'].tolist()
     translations = data['translation'].tolist()
@@ -67,8 +71,9 @@ for pair in tqdm(reference_list.items()):
 
     translations = [truecase.get_true_case(s) for s in translations]
     
-    xmoverscores = scorer.compute_xmoverscore(args.mapping, projection, bias, source, translations, ngram=2, bs=64)
-    
+    xmoverscores = scorer.compute_xmoverscore(args.alignment, projection, bias, source, translations, ngram=args.ngram, \
+                                              layer=args.layer, dropout_rate=args.dropout_rate, bs=args.batch_size)
+
     lm_scores = scorer.compute_perplexity(translations, bs=1)
     
     scores = metric_combination(xmoverscores, lm_scores, [1, 0.1])
