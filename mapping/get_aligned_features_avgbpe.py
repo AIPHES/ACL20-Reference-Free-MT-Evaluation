@@ -1,14 +1,9 @@
-#!/usr/bin/env python
-
-import os
-import sys
 import argparse
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, SequentialSampler, TensorDataset
 from tqdm import tqdm
 from transformers import BertModel, BertTokenizer
-from utils import read_align, read_parallel
 
 def convert_sent_to_input(sents, tokenizer, max_seq_length):
     input_ids = []
@@ -21,15 +16,14 @@ def convert_sent_to_input(sents, tokenizer, max_seq_length):
 
 
 def convert_words_to_bpe(para, tokenizer):
-    
     bpe_para, bpe_table = [], []
 
     for s in para:
-        
+
         src_sent, tgt_sent = s[0], s[1]
         src_bpe_table, tgt_bpe_table = [], []
         src_sent_bpe, tgt_sent_bpe = [], []
-        
+
         for word in src_sent:
             token = tokenizer.tokenize(word)
             word2bpe_map = []
@@ -45,22 +39,42 @@ def convert_words_to_bpe(para, tokenizer):
                 word2bpe_map.append(len(tgt_sent_bpe)+i)
             tgt_sent_bpe.extend(token)
             tgt_bpe_table.append(word2bpe_map)
-            
+
         bpe_para.append([src_sent_bpe, tgt_sent_bpe])
         bpe_table.append([src_bpe_table, tgt_bpe_table])
-        
+
     return bpe_para, bpe_table
 
 
-def main(arguments):
+def read_parallel(file_name, reverse):
+    para = list()
+    with open(file_name, "rb") as f:
+        for line in f:
+            src, tgt = line.decode().split("|||")
+            para.append((tgt.split(), src.split()) if reverse else (src.split(), tgt.split()))
+    return para
 
+
+def read_align(file_name, reverse):
+    aligned = list()
+    with open(file_name, "rb") as f:
+        for line in f:
+            pairs = list()
+            for pair in line.split():
+                pair = tuple(map(int, reversed(pair.split(b"-")) if reverse else pair.split(b"-")))
+                pairs.append(pair)
+            aligned.append(pairs)
+    return sum(len(pairs) for pairs in aligned), aligned
+
+
+def main():
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    
-    parser.add_argument('--para_file', type=str, 
+
+    parser.add_argument('--para_file', type=str,
                         help="Input parallel file")
-    parser.add_argument('--align_file', type=str, 
+    parser.add_argument('--align_file', type=str,
                         help="Input alignment file")
     parser.add_argument('--reverse', type=int, default=0,
                         help="Wheter para and align is reversed")
@@ -70,7 +84,7 @@ def main(arguments):
                         word_align uses the alignment from align_file \
                         sent_avg uses the averaged embeddign for each sentence")
 
-    parser.add_argument("--bert_model", default=None, type=str, 
+    parser.add_argument("--bert_model", default=None, type=str,
                     help="Bert pre-trained model selected in the list: bert-base-uncased, "
                     "bert-large-uncased, bert-base-cased, bert-large-cased, bert-base-multilingual-uncased, "
                     "bert-base-multilingual-cased, bert-base-chinese.")
@@ -89,24 +103,14 @@ def main(arguments):
 
     args = parser.parse_args()
 
-
-    args.para_file = 'europarl-v7.en-es.30k.cased'
-    args.align_file = 'sym.align.europarl-v7.en-es.30k.uncased'
-    args.bert_model = 'bert-base-multilingual-cased'
-    args.cache_dir = 'cache'
-    args.layer = 12
-    args.output_file = 'europarl-v7.en-es.30k.12'
-
     para = read_parallel(args.para_file, reverse=args.reverse)
 
     align_cnt, align_pairs = read_align(args.align_file, reverse=args.reverse)
     print("Read {} aligns".format(align_cnt))
 
     tokenizer = BertTokenizer.from_pretrained(args.bert_model, do_lower_case=args.do_lower_case)
-    
-    ot_model = BertModel.from_pretrained('bert-base-uncased', do_lower_case=True)
-    
-    bpe_para, bpe_table = convert_words_to_bpe(para[:100], tokenizer)
+
+    bpe_para, bpe_table = convert_words_to_bpe(para, tokenizer)
 
     # filter long/empty sentences
     fltr_para = []
@@ -134,7 +138,7 @@ def main(arguments):
         print(' '.join([para[n][0][i] for i in fltr_bpe_table[n][0][a[0]]]) + ' : ' + ' '.join([para[n][1][i] for i in fltr_bpe_table[n][1][a[1]]]))
 
     # bert
-    device = torch.device('cuda')
+    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
     en_model = BertModel.from_pretrained(args.bert_model, cache_dir=args.cache_dir, output_hidden_states=True)
     en_model.to(device)
@@ -148,37 +152,33 @@ def main(arguments):
     src_sampler = SequentialSampler(src_data)
     src_dataloader = DataLoader(src_data, sampler=src_sampler, batch_size=args.batch_size)
 
-    ot_model = BertModel.from_pretrained('bert-base-uncased', cache_dir=args.cache_dir, output_hidden_states=True)
-    ot_model.to(device)
-    
     tgt_data = TensorDataset(tgt_input, tgt_mask)
     tgt_sampler = SequentialSampler(tgt_data)
     tgt_dataloader = DataLoader(tgt_data, sampler=tgt_sampler, batch_size=args.batch_size)
-    
+
     en_model.eval()
-    ot_model.eval()
 
     src_embed = []
     tgt_embed = []
 
-    for step, batch in enumerate(tqdm(src_dataloader, desc="Iteration")):
+    for batch in tqdm(src_dataloader, desc="Iteration"):
         input_ids, input_mask = batch
         input_ids = input_ids.to(device)
         input_mask = input_mask.to(device)
-        
+
         with torch.no_grad():
             all_encoder_layers = en_model(input_ids, attention_mask=input_mask)[2]
 
         src_embed.append(all_encoder_layers[args.layer][:,1:].detach().to('cpu').numpy())#remove CLS
 
-    for step, batch in enumerate(tqdm(tgt_dataloader, desc="Iteration")):
+    for batch in tqdm(tgt_dataloader, desc="Iteration"):
         input_ids, input_mask = batch
         input_ids = input_ids.to(device)
         input_mask = input_mask.to(device)
-        
+
         with torch.no_grad():
-            all_encoder_layers = ot_model(input_ids, attention_mask=input_mask)[2]
-            
+            all_encoder_layers = en_model(input_ids, attention_mask=input_mask)[2]
+
         tgt_embed.append(all_encoder_layers[args.layer][:,1:].detach().to('cpu').numpy())
 
     src_embed = np.concatenate(src_embed)
@@ -187,7 +187,7 @@ def main(arguments):
     print(tgt_embed.shape)
 
     feature_size = src_embed.shape[2]
-    
+
     if args.align_mode == 'word_align':
         final_res = [np.zeros((align_cnt, feature_size)),
                      np.zeros((align_cnt, feature_size))]
@@ -203,7 +203,7 @@ def main(arguments):
                 for a in pairs:
                     if len(fltr_bpe_table[i][0][a[0]]) > 0 and len(fltr_bpe_table[i][1][a[1]]) > 0: # token alignment (0,0)
                         src_word_avg_embed = np.zeros((1, feature_size))
-                        
+
                         for j in fltr_bpe_table[i][0][a[0]]:
                             src_word_avg_embed += src_embed[i][j,:]
                         final_res[0][cnt,:] = src_word_avg_embed / len(fltr_bpe_table[i][0][a[0]])
@@ -225,4 +225,4 @@ def main(arguments):
         np.savetxt(args.output_file+suffix[j], final_res[j], delimiter=' ', fmt='%0.6f')
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+    main()
