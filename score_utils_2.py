@@ -89,7 +89,9 @@ def lm_perplexity(model, hyps, tokenizer, batch_size=1, device='cuda:0'):
             input_ids = torch.tensor([arr])
             input_ids = input_ids.to(device=device)          
             score = model(input_ids, labels=input_ids)[0]
-            preds.append(-score.item())
+            # preds.append(-score.item()) Replace negative log-likelihood, log p(x_1,...,x_n), with perplexity for normalization
+            perplexity = (1 / np.exp(score.item())) ** (1 / input_ids.shape[1])
+            preds.append(perplexity)
     return preds
 
 def get_ngram_embs(embeddings, ngram):  
