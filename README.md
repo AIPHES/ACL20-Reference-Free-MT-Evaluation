@@ -12,6 +12,7 @@ XMoverScore is a cross-lingual extension of [MoverScore](https://github.com/AIPH
 * The remapping weights are released, with 11 supported languages involving German, Chinese, Czech, Latvian, Finnish, Russian, Turkish, Gujarati, Kazakh, Lithuanian and Estonian. 
 * We provide [manual annotations](https://docs.google.com/spreadsheets/d/1kLGk66TgUzSRftm_7Xir5ehhnU1AqD5XR8pM44mDSTI/edit?usp=sharing) of cross-lingual (German-English and Russian-English) DA scores for source-translation pairs.
 * Since our metric uses BERT and GPT-2, a GPU is necessary.
+* Note that the current version uses [normalized language model scores](https://github.com/AIPHES/ACL20-Reference-Free-MT-Evaluation/commit/cc4f4fb8f529a1a4b12bc303c4ca98bbc97069b6). For reproducibility, replacing them with negative log-likelihoods is necessary. 
 
 ## Dependencies
 * Python 3.6
