@@ -158,7 +158,9 @@ def word_mover_score(mapping, projection, bias, model, tokenizer, src, hyps, \
             flow[flow < threshold] = 0
 
             score = (flow * dist).sum()            
-            preds.append(1 - score) 
+            # preds.append(1 - score) 
+            preds.append(1./(1. + score))
+            
             
     return preds
 
